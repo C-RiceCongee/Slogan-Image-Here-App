@@ -1,16 +1,24 @@
 <script setup lang="ts">
-const onFailed = () => {}
+const onFailed = () => {
+  console.log(1)
+}
+const onAdded = (files: readonly any[]) => {
+  console.log(files)
+}
 </script>
 
 <template>
   <q-uploader
-    url="http://localhost:4444/upload"
+    ref=""
+    url=""
     label="上传你的作品"
-    :on-failed="onFailed"
+    color="amber"
     multiple
     batch
     accept="image/jpeg,image/jpg"
     style="width: 90%; margin: 20px auto; min-height: calc(100vh - 130px)"
+    @failed="onFailed"
+    @added="onAdded"
   >
     <template #list="scope">
       <div v-show="scope.files.length > 0" class="list">
