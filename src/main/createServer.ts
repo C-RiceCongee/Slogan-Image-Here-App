@@ -4,11 +4,31 @@ import bodyParser from 'koa-bodyparser'
 import multer from 'koa-multer'
 import path from 'path'
 import cors from '@koa/cors'
-export default function () {
+import { BiGenProt } from './logic/net'
+import serve from 'koa-static'
+import fs from 'fs'
+import { cacheDir } from '.'
+const initCacheDir = () => {
+  return new Promise((resolve) => {
+    try {
+      const existCacheDir = fs.existsSync(cacheDir)
+      if (!existCacheDir) {
+        fs.mkdirSync(cacheDir)
+      }
+      resolve(true)
+    } catch (e) {
+      resolve(false)
+    }
+  })
+}
+export default async function () {
+  if (!(await initCacheDir())) process.exit(0)
   const app = new Koa()
   const router = new Router()
   // 使用koa2-cors中间件
   app.use(cors())
+  // 指定静态文件目录
+  app.use(serve(cacheDir))
   // 配置koa-bodyparser中间件
   app.use(bodyParser())
   // 配置koa-multer中间件
@@ -22,9 +42,10 @@ export default function () {
     // 可以在这里对上传的文件进行处理或保存到数据库等操作
     ctx.body = { message: '文件上传成功' }
   })
+  const randomPort = await BiGenProt()
   app.use(router.routes()).use(router.allowedMethods())
   // 启动服务器
-  app.listen(3000, () => {
-    console.log('服务器已启动，监听端口3000')
+  app.listen(randomPort, () => {
+    console.log(`服务器已启动，监听端口${randomPort}`)
   })
 }

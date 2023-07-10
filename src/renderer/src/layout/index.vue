@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import EssentialLink from '@renderer/components/EssentialLink.vue'
 import Breadcrumbs from '@renderer/components/Breadcrumbs.vue'
+import FabAction from '@renderer/components/FabAction.vue'
 const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value
 }
@@ -29,7 +30,7 @@ const leftDrawerOpen = ref(false)
         <q-toolbar>
           <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
           <q-toolbar-title>Slogan Image Here</q-toolbar-title>
-          <div>Quasar v{{ $q.version }}</div>
+          <!--          <div>Quasar v{{ $q.version }}</div>-->
         </q-toolbar>
         <a-toolbar inset>
           <Breadcrumbs />
@@ -49,6 +50,7 @@ const leftDrawerOpen = ref(false)
           <component :is="Component" v-if="!$route.meta.keepAlive" :key="$route.name"></component>
         </router-view>
       </q-page-container>
+      <FabAction></FabAction>
     </q-layout>
   </div>
 </template>

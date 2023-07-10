@@ -1,14 +1,28 @@
 <script setup lang="ts">
-const onFailed = () => {
-  console.log(1)
+import { ref } from 'vue'
+import { UPLOAD } from 'src/constant'
+import { EXIFRootObject } from 'src/types'
+const files = ref<Array<EXIFRootObject>>()
+
+const upload = async () => {
+  const res = await window.electron.ipcRenderer.sendSync(UPLOAD)
+  files.value = res
+  console.log(res)
 }
-const onAdded = (files: readonly any[]) => {
-  console.log(files)
-}
+
 </script>
 
 <template>
-  <q-uploader
+
+  <div class="list">
+    <div v-for="(file, idx) in files" :key="idx" class="imageItem">
+      <q-item-label class="ellipsis filename">
+        {{ file.fileName }}
+      </q-item-label>
+      <img :src="file.originSrc" alt="" />
+    </div>
+  </div>
+  <!-- <q-uploader
     ref=""
     url=""
     label="上传你的作品"
@@ -40,7 +54,7 @@ const onAdded = (files: readonly any[]) => {
         </p>
       </div>
     </template>
-  </q-uploader>
+  </q-uploader> -->
 </template>
 
 <style scoped lang="less">

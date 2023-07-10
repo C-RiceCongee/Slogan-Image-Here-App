@@ -1,8 +1,20 @@
 import { app, BrowserWindow, shell } from 'electron'
-import { join } from 'path'
+import path, { join } from 'path'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import createServer from './createServer'
+import { BiGenProt } from './logic/net'
+import './handlers/index'
+export const userDataPath = app.getPath('userData')
+export const cacheDir = path.join(userDataPath, 'history')
+console.log(cacheDir)
+export const PORT = 3000
+export const dbPath: string = path.join(userDataPath, 'db')
+export const cacheHttpURL = async () => {
+  const port = await BiGenProt()
+  console.log({ port })
+  return `http://127.0.0.1:${port}`
+}
 
 function createWindow(): void {
   // Create the browser window.
