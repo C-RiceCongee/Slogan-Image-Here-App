@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { UPLOAD } from 'src/constant'
+import BaseGuider from '@renderer/components/BaseGuider.vue'
 import { EXIFRootObject } from 'src/types'
 const files = ref<Array<EXIFRootObject>>()
 
@@ -9,55 +10,35 @@ const upload = async () => {
   files.value = res
   console.log(res)
 }
-
 </script>
 
 <template>
-
+  <div class="guiderArea">
+    <BaseGuider></BaseGuider>
+    <q-btn class="full-width" style="margin-top: 10px" icon="cloud_upload" @click="upload"></q-btn>
+  </div>
   <div class="list">
     <div v-for="(file, idx) in files" :key="idx" class="imageItem">
       <q-item-label class="ellipsis filename">
         {{ file.fileName }}
       </q-item-label>
-      <img :src="file.originSrc" alt="" />
+      <q-img style="width: 95%; height: 80%" fit="contain" :src="file.originSrc" alt="" />
     </div>
   </div>
-  <!-- <q-uploader
-    ref=""
-    url=""
-    label="上传你的作品"
-    color="amber"
-    multiple
-    batch
-    accept="image/jpeg,image/jpg"
-    style="width: 90%; margin: 20px auto; min-height: calc(100vh - 130px)"
-    @failed="onFailed"
-    @added="onAdded"
-  >
-    <template #list="scope">
-      <div v-show="scope.files.length > 0" class="list">
-        <div v-for="file in scope.files" :key="file.__key" class="imageItem">
-          <q-item-label class="ellipsis filename">
-            {{ file.name }}
-          </q-item-label>
-          <img :src="file.__img.src" alt="" />
-        </div>
-      </div>
-      <div v-show="scope.files.length === 0" class="waiting">
-        <q-spinner-puff size="100" color="brown" />
-        <p>等待上传JPEG/JPG</p>
-        <p>
-          <i>点击上面的<q-icon name="add" />或者拖拽进来 <q-icon name="waving_hand" /></i>
-        </p>
-        <p>
-          <i>其他格式可能解析不到EXIF数据 <q-icon name="info"></q-icon></i>
-        </p>
-      </div>
-    </template>
-  </q-uploader> -->
 </template>
 
 <style scoped lang="less">
+.q-pa-md {
+  padding: 0;
+}
+.guiderArea {
+  width: 90%;
+  margin: 30px auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
 .list {
   display: flex;
   justify-content: center;

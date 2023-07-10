@@ -17,7 +17,7 @@ const routes: VueRouter.RouteRecordRaw[] = [
         component: () => import('@renderer/app/upload/index.vue'),
         meta: {
           keepAlive: true,
-          title: '上传区域',
+          title: '上传作品',
           needLogin: false,
           icon: 'upload'
         }
