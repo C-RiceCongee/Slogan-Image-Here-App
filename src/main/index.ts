@@ -1,19 +1,42 @@
 import { app, BrowserWindow, shell } from 'electron'
 import path, { join } from 'path'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
-import createServer from './createServer'
 import { BiGenProt } from './logic/net'
 import './handlers/index'
+import fs from 'fs'
+import express from 'express'
 export const userDataPath = app.getPath('userData')
 export const cacheDir = path.join(userDataPath, 'history')
-console.log(cacheDir)
+
 export const PORT = 3000
 export const dbPath: string = path.join(userDataPath, 'db')
 export const cacheHttpURL = async () => {
   const port = await BiGenProt()
-  console.log({ port })
   return `http://127.0.0.1:${port}`
+}
+const initCacheDir = () => {
+  return new Promise((resolve) => {
+    try {
+      const existCacheDir = fs.existsSync(cacheDir)
+      if (!existCacheDir) {
+        fs.mkdirSync(cacheDir)
+      }
+      resolve(true)
+    } catch (e) {
+      resolve(false)
+    }
+  })
+}
+async function createServer() {
+  if (!(await initCacheDir())) process.exit(0)
+  const randomPort = await BiGenProt()
+  // 启动服务器
+  // 启动 Express 服务器
+  const server = express()
+  server.use(express.static(cacheDir))
+  server.listen(randomPort, () => {
+    console.log(`服务器已启动，监听端口${randomPort}`)
+  })
 }
 
 function createWindow(): void {
@@ -22,11 +45,10 @@ function createWindow(): void {
     width: 900,
     height: 670,
     minWidth: 500,
-    minHeight: 500,
+    minHeight: 620,
     show: false,
     autoHideMenuBar: true,
     titleBarStyle: 'hidden',
-    ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
@@ -57,7 +79,6 @@ function createWindow(): void {
 app.whenReady().then(() => {
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
-  createServer()
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
   // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
@@ -82,6 +103,8 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 })
-
+app.on('ready', () => {
+  createServer()
+})
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.

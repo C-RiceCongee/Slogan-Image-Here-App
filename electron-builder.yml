@@ -1,5 +1,5 @@
-appId: com.electron.app
-productName: electron-app
+appId: 0.0.1
+productName: Image
 directories:
   buildResources: build
 files:
